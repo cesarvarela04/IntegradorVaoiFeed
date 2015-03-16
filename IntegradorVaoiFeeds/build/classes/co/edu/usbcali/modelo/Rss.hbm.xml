@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 16/03/2015 02:47:54 PM by Hibernate Tools 4.0.0 -->
+<hibernate-mapping>
+    <class name="co.edu.usbcali.modelo.Rss" table="rss" schema="public">
+        <id name="codigoRss" type="java.lang.Long">
+            <column name="codigo_rss" />
+            <generator class="assigned" />
+        </id>
+        <property name="url" type="java.lang.String">
+            <column name="url" length="500" not-null="true" />
+        </property>
+        <set name="coleccionesRsses" table="colecciones_rss" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="rss_codigo_rss" not-null="true" />
+            </key>
+            <one-to-many class="co.edu.usbcali.modelo.ColeccionesRss" />
+        </set>
+        <set name="entradases" table="entradas" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="rss_codigo_rss" not-null="true" />
+            </key>
+            <one-to-many class="co.edu.usbcali.modelo.Entradas" />
+        </set>
+    </class>
+</hibernate-mapping>
