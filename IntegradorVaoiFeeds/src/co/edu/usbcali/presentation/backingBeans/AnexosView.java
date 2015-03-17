@@ -214,7 +214,7 @@ private IBusinessDelegatorView businessDelegatorView;
 
 	    	        Long codigoAnexo = FacesUtils.checkLong(txtCodigoAnexo);
 	    
-                        entity.setArchivo(FacesUtils.checkbyte[](txtArchivo));
+                        entity.setArchivo(FacesUtils.checkString(txtArchivo));
                                             	            		entity.setCodigoAnexo(codigoAnexo);
             	                                            entity.setFormato(FacesUtils.checkString(txtFormato));
                                 entity.setNombre(FacesUtils.checkString(txtNombre));
@@ -237,7 +237,7 @@ private IBusinessDelegatorView businessDelegatorView;
 		    	    		entity = businessDelegatorView.getAnexos(codigoAnexo);
     		}
     		
-        	    		entity.setArchivo(FacesUtils.checkbyte[](txtArchivo));
+        	    		entity.setArchivo(FacesUtils.checkString(txtArchivo));
     	        	        	    		entity.setFormato(FacesUtils.checkString(txtFormato));
     	        	    		entity.setNombre(FacesUtils.checkString(txtNombre));
     	        	    		entity.setUrl(FacesUtils.checkString(txtUrl));
@@ -313,7 +313,7 @@ private IBusinessDelegatorView businessDelegatorView;
         public String action_modifyWitDTO(byte[] archivo, Long codigoAnexo, String formato, String nombre, String url, Long codigoArti_Articulos) throws Exception {
         try {
         
-        	    		entity.setArchivo(FacesUtils.checkbyte[](archivo));
+        	    		entity.setArchivo(FacesUtils.checkString(txtArchivo));
     	        	        	    		entity.setFormato(FacesUtils.checkString(formato));
     	        	    		entity.setNombre(FacesUtils.checkString(nombre));
     	        	    		entity.setUrl(FacesUtils.checkString(url));

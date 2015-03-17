@@ -15,18 +15,18 @@ import java.util.Date;
 */
 public class AnexosDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private byte[] archivo;
+    private String archivo;
     private Long codigoAnexo;
     private String formato;
     private String nombre;
     private String url;
     private Long codigoArti_Articulos;
 
-    public byte[] getArchivo() {
+    public String getArchivo() {
         return archivo;
     }
 
-    public void setArchivo(byte[] archivo) {
+    public void setArchivo(String archivo) {
         this.archivo = archivo;
     }
 

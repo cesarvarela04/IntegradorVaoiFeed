@@ -13,7 +13,7 @@ public class Anexos  implements java.io.Serializable {
      private Articulos articulos;
      private String nombre;
      private String url;
-     private byte[] archivo;
+     private String archivo;
      private String formato;
 
     public Anexos() {
@@ -26,7 +26,7 @@ public class Anexos  implements java.io.Serializable {
         this.nombre = nombre;
         this.formato = formato;
     }
-    public Anexos(Long codigoAnexo, Articulos articulos, String nombre, String url, byte[] archivo, String formato) {
+    public Anexos(Long codigoAnexo, Articulos articulos, String nombre, String url, String archivo, String formato) {
        this.codigoAnexo = codigoAnexo;
        this.articulos = articulos;
        this.nombre = nombre;
@@ -63,11 +63,11 @@ public class Anexos  implements java.io.Serializable {
     public void setUrl(String url) {
         this.url = url;
     }
-    public byte[] getArchivo() {
+    public String getArchivo() {
         return this.archivo;
     }
     
-    public void setArchivo(byte[] archivo) {
+    public void setArchivo(String archivo) {
         this.archivo = archivo;
     }
     public String getFormato() {
