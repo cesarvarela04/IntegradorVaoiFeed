@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.Entradas" table="entradas" schema="public">
         <id name="codigoEntra" type="java.lang.Long">
             <column name="codigo_entra" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">entradas_codigo_entra_seq</param>
+			</generator> 
         </id>
         <many-to-one name="rss" class="co.edu.usbcali.modelo.Rss" fetch="select">
             <column name="rss_codigo_rss" not-null="true" />

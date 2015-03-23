@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.ColeccionesRss" table="colecciones_rss" schema="public">
         <id name="codigoColRss" type="java.lang.Long">
             <column name="codigo_col_rss" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">colecciones_rss_codigo_col_rss_seq</param>
+			</generator> 
         </id>
         <many-to-one name="rss" class="co.edu.usbcali.modelo.Rss" fetch="select">
             <column name="rss_codigo_rss" not-null="true" />

@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.Roles" table="roles" schema="public">
         <id name="codigoRol" type="java.lang.Long">
             <column name="codigo_rol" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">roles_codigo_rol_seq</param>
+			</generator> 
         </id>
         <property name="nombreRol" type="java.lang.String">
             <column name="nombre_rol" length="150" not-null="true" unique="true" />

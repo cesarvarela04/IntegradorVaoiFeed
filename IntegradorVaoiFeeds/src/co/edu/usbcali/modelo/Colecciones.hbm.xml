@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.Colecciones" table="colecciones" schema="public">
         <id name="codigoCole" type="java.lang.Long">
             <column name="codigo_cole" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">colecciones_codigo_cole_seq</param>
+			</generator> 
         </id>
         <many-to-one name="usuarios" class="co.edu.usbcali.modelo.Usuarios" fetch="select">
             <column name="usuarios_codigo_usua" not-null="true" />

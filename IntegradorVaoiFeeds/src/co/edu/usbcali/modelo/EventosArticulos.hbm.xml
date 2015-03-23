@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.EventosArticulos" table="eventos_articulos" schema="public">
         <id name="codigoEveArt" type="java.lang.Long">
             <column name="codigo_eve_art" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">eventos_articulos_codigo_eve_art_seq</param>
+			</generator> 
         </id>
         <many-to-one name="articulos" class="co.edu.usbcali.modelo.Articulos" fetch="select">
             <column name="articulos_codigo_arti" not-null="true" />

@@ -4,9 +4,11 @@
 <!-- Generated 16/03/2015 02:47:54 PM by Hibernate Tools 4.0.0 -->
 <hibernate-mapping>
     <class name="co.edu.usbcali.modelo.Categorias" table="categorias" schema="public">
-        <id name="codigoCate" type="java.lang.Long">
+         <id name="codigoCate" type="java.lang.Long">
             <column name="codigo_cate" />
-            <generator class="assigned" />
+            <generator class="sequence">
+				<param name="sequence">categorias_codigo_cate_seq</param>
+			</generator>  
         </id>
         <property name="nombre" type="java.lang.String">
             <column name="nombre" length="150" not-null="true" unique="true" />

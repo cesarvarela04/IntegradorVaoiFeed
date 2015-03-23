@@ -6,7 +6,9 @@
     <class name="co.edu.usbcali.modelo.Anexos" table="anexos" schema="public">
         <id name="codigoAnexo" type="java.lang.Long">
             <column name="codigo_anexo" />
-            <generator class="assigned" />
+             <generator class="sequence">
+				<param name="sequence">anexos_codigo_anexo_seq</param>				
+			</generator>
         </id>
         <many-to-one name="articulos" class="co.edu.usbcali.modelo.Articulos" fetch="select">
             <column name="articulos_codigo_arti" not-null="true" />
