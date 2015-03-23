@@ -1,26 +1,22 @@
 package co.edu.usbcali.modelo.control;
 
-import co.edu.usbcali.dataaccess.dao.*;
-import co.edu.usbcali.exceptions.*;
-import co.edu.usbcali.modelo.*;
-import co.edu.usbcali.modelo.dto.CategoriasDTO;
-import co.edu.usbcali.utilities.Utilities;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.context.annotation.Scope;
-
-import org.springframework.stereotype.Service;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.edu.usbcali.dataaccess.dao.ICategoriasArticulosDAO;
+import co.edu.usbcali.dataaccess.dao.ICategoriasDAO;
+import co.edu.usbcali.exceptions.ZMessManager;
+import co.edu.usbcali.modelo.Categorias;
+import co.edu.usbcali.modelo.CategoriasArticulos;
+import co.edu.usbcali.modelo.dto.CategoriasDTO;
+import co.edu.usbcali.utilities.Utilities;
 
 
 /**
@@ -63,56 +59,57 @@ public class CategoriasLogic implements ICategoriasLogic {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void saveCategorias(Categorias entity) throws Exception {
         try {
-            if (entity.getCodigoCate() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoCate");
-            }
 
             if (entity.getEstadoRegistro() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "estadoRegistro");
+                throw new Exception(
+                    "El EstadoRegistro no puede estar nulo");
             }
 
             if ((entity.getEstadoRegistro() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getEstadoRegistro(), 1) == false)) {
-                throw new ZMessManager().new NotValidFormatException(
-                    "estadoRegistro");
+                throw new Exception(
+                    "El Estado Registro no puede tener mas de 1 caracter");
             }
 
             if (entity.getFechaCreacion() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "fechaCreacion");
+                throw new Exception(
+                    "La Fecha Creación no puede estar nulo");
             }
 
             if (entity.getNombre() == null) {
-                throw new ZMessManager().new EmptyFieldException("nombre");
+                throw new Exception("El nombre no puede estar nulo");
             }
 
             if ((entity.getNombre() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getNombre(),
                         150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("nombre");
+                throw new Exception("El Nombre no puede tener mas de 150 caracteres");
             }
 
             if (entity.getUsuCrea() == null) {
-                throw new ZMessManager().new EmptyFieldException("usuCrea");
+                throw new Exception("El usuario Creador no puede estar nulo");
             }
 
             if ((entity.getUsuCrea() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getUsuCrea(), 150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("usuCrea");
+                throw new Exception("El Usuario Creador no puede tenes mas de 150 caracteres");
             }
 
             if ((entity.getUsuModifica() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getUsuModifica(), 150) == false)) {
-                throw new ZMessManager().new NotValidFormatException(
-                    "usuModifica");
+                throw new Exception(
+                    "El Usuario Modificador no puede tener mas de 150 caracteres");
             }
-
-            if (getCategorias(entity.getCodigoCate()) != null) {
-                throw new ZMessManager(ZMessManager.ENTITY_WITHSAMEKEY);
+            
+            entity.setNombre(entity.getNombre().toLowerCase());
+            
+            Long existe=existeCategoria(entity.getNombre());
+            
+            if(existe>=1){
+            	throw new Exception("Ya existe la categoria ingresada");
             }
 
             categoriasDAO.save(entity);
@@ -153,59 +150,70 @@ public class CategoriasLogic implements ICategoriasLogic {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void updateCategorias(Categorias entity) throws Exception {
         try {
-            if (entity == null) {
-                throw new ZMessManager().new NullEntityExcepcion("Categorias");
-            }
 
             if (entity.getCodigoCate() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoCate");
+                throw new Exception("El codigo Categoria no puede estar nulo");
             }
 
             if (entity.getEstadoRegistro() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "estadoRegistro");
+                throw new Exception(
+                    "El EstadoRegistro no puede estar nulo");
             }
 
             if ((entity.getEstadoRegistro() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getEstadoRegistro(), 1) == false)) {
-                throw new ZMessManager().new NotValidFormatException(
-                    "estadoRegistro");
+                throw new Exception(
+                    "El Estado Registro no puede tener mas de 1 caracter");
             }
 
             if (entity.getFechaCreacion() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "fechaCreacion");
+                throw new Exception(
+                    "La Fecha Creación no puede estar nulo");
             }
 
             if (entity.getNombre() == null) {
-                throw new ZMessManager().new EmptyFieldException("nombre");
+                throw new Exception("El nombre no puede estar nulo");
             }
 
             if ((entity.getNombre() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getNombre(),
                         150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("nombre");
+                throw new Exception("El Nombre no puede tener mas de 150 caracteres");
             }
 
             if (entity.getUsuCrea() == null) {
-                throw new ZMessManager().new EmptyFieldException("usuCrea");
+                throw new Exception("El usuario Creador no puede estar nulo");
             }
 
             if ((entity.getUsuCrea() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getUsuCrea(), 150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("usuCrea");
+                throw new Exception("El Usuario Creador no puede tenes mas de 150 caracteres");
             }
 
             if ((entity.getUsuModifica() != null) &&
                     (Utilities.checkWordAndCheckWithlength(
                         entity.getUsuModifica(), 150) == false)) {
-                throw new ZMessManager().new NotValidFormatException(
-                    "usuModifica");
+                throw new Exception(
+                    "El Usuario Modificador no puede tener mas de 150 caracteres");
             }
 
-            categoriasDAO.update(entity);
+            entity.setNombre(entity.getNombre().toLowerCase());
+            
+            Categorias categoriaBD=getCategorias(entity.getCodigoCate());
+            
+            if(entity.getNombre().equals(categoriaBD.getCodigoCate())){
+            	
+            }else{
+                Long existe=existeCategoria(entity.getNombre());
+                
+                if(existe>=1){
+                	throw new Exception("Ya existe la categoria ingresada");
+                }
+            }
+               
+            categoriasDAO.merge(entity);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -453,4 +461,9 @@ public class CategoriasLogic implements ICategoriasLogic {
 
         return list;
     }
+    @Transactional(readOnly = true)
+	@Override
+	public Long existeCategoria(String nombre) throws Exception {
+		return categoriasDAO.existeCategoria(nombre);
+	}
 }

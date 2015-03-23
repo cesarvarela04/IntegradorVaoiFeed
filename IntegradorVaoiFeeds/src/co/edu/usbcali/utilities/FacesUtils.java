@@ -36,8 +36,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.sql.Blob;
-import javax.sql.rowset.serial.SerialBlob;
 
+import javax.sql.rowset.serial.SerialBlob;
 import javax.faces.FactoryFinder;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
@@ -57,6 +57,7 @@ import co.edu.usbcali.exceptions.ZMessManager;
 /**
  * JSF utilities.
  */
+@SuppressWarnings("deprecation")
 public class FacesUtils {
 	/**
 	 * Get servlet context.
@@ -205,11 +206,13 @@ public class FacesUtils {
 		return getApplication().createValueBinding(el);
 	}
 
+	@SuppressWarnings("unused")
 	private static HttpServletRequest getServletRequest() {
 		return (HttpServletRequest) FacesContext.getCurrentInstance()
 				.getExternalContext().getRequest();
 	}
 
+	@SuppressWarnings("unused")
 	private static Object getElValue(String el) {
 		return getValueBinding(el).getValue(FacesContext.getCurrentInstance());
 	}

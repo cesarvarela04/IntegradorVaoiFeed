@@ -15,6 +15,7 @@ import org.apache.commons.validator.EmailValidator;
  * www.zathuracode.org
  * 
  */
+@SuppressWarnings("deprecation")
 public class Utilities {
 
 	public static boolean isNumeric(String word) {
@@ -120,6 +121,7 @@ public class Utilities {
 		return date;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static boolean validationsList(List list) {
 		if (list != null) {
 			if (!list.isEmpty() && list.size() > 0) {
@@ -145,6 +147,7 @@ public class Utilities {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings({ "rawtypes", "unused" })
 	public static boolean matchClasses(Object object, Object object2,
 			boolean privateFields) throws Exception {
 

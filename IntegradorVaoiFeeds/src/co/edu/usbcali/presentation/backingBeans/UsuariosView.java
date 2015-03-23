@@ -102,7 +102,7 @@ public class UsuariosView implements Serializable {
 			if (txtClave.equals(txtClave2)) {
 
 			} else {
-				throw new Exception("No coincide la contraseña ingresada");
+				throw new Exception("No coincide la contraseÃ±a ingresada");
 			}
 
 			businessDelegatorView.saveUsuarios(entity);
@@ -134,7 +134,7 @@ public class UsuariosView implements Serializable {
 			if (txtClave.equals(txtClave2)) {
 
 			} else {
-				throw new Exception("No coincide la contraseña ingresada");
+				throw new Exception("No coincide la contraseÃ±a ingresada");
 			}
 
 			businessDelegatorView.saveUsuarios(entity);

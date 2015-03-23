@@ -1,32 +1,19 @@
 package co.edu.usbcali.dataaccess.dao;
 
-import co.edu.usbcali.dataaccess.api.HibernateDaoImpl;
-import co.edu.usbcali.modelo.Categorias;
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-
-import org.hibernate.criterion.Example;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Resource;
+import co.edu.usbcali.dataaccess.api.HibernateDaoImpl;
+import co.edu.usbcali.modelo.Categorias;
 
 
 /**
@@ -43,7 +30,8 @@ import javax.annotation.Resource;
 @Repository("CategoriasDAO")
 public class CategoriasDAO extends HibernateDaoImpl<Categorias, Long>
     implements ICategoriasDAO {
-    private static final Logger log = LoggerFactory.getLogger(CategoriasDAO.class);
+    @SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(CategoriasDAO.class);
     @Resource
     private SessionFactory sessionFactory;
 
@@ -51,4 +39,23 @@ public class CategoriasDAO extends HibernateDaoImpl<Categorias, Long>
         ApplicationContext ctx) {
         return (ICategoriasDAO) ctx.getBean("CategoriasDAO");
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Long existeCategoria(String nombre) throws Exception {
+		Long exiten = 0L;
+		try {
+			Query query = getSession().getNamedQuery("existeCategoria");
+			query.setParameter("pNombre", nombre);
+			List<Long> cantA = query.list();
+
+			if (cantA!=null) {
+				exiten=cantA.get(0);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return exiten;
+	}
 }

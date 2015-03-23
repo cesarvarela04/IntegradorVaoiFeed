@@ -1,26 +1,20 @@
 package co.edu.usbcali.modelo.control;
 
-import co.edu.usbcali.dataaccess.dao.*;
-import co.edu.usbcali.exceptions.*;
-import co.edu.usbcali.modelo.*;
-import co.edu.usbcali.modelo.dto.AnexosDTO;
-import co.edu.usbcali.utilities.Utilities;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.context.annotation.Scope;
-
-import org.springframework.stereotype.Service;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.edu.usbcali.dataaccess.dao.IAnexosDAO;
+import co.edu.usbcali.exceptions.ZMessManager;
+import co.edu.usbcali.modelo.Anexos;
+import co.edu.usbcali.modelo.dto.AnexosDTO;
+import co.edu.usbcali.utilities.Utilities;
 
 
 /**
@@ -65,6 +59,12 @@ public class AnexosLogic implements IAnexosLogic {
         try {
             if (entity.getArticulos() == null) {
                 throw new ZMessManager().new ForeignException("articulos");
+            }
+
+            if ((entity.getArchivo() != null) &&
+                    (Utilities.checkWordAndCheckWithlength(
+                        entity.getArchivo(), 500) == false)) {
+                throw new ZMessManager().new NotValidFormatException("archivo");
             }
 
             if (entity.getCodigoAnexo() == null) {
@@ -139,6 +139,12 @@ public class AnexosLogic implements IAnexosLogic {
 
             if (entity.getArticulos() == null) {
                 throw new ZMessManager().new ForeignException("articulos");
+            }
+
+            if ((entity.getArchivo() != null) &&
+                    (Utilities.checkWordAndCheckWithlength(
+                        entity.getArchivo(), 500) == false)) {
+                throw new ZMessManager().new NotValidFormatException("archivo");
             }
 
             if (entity.getCodigoAnexo() == null) {

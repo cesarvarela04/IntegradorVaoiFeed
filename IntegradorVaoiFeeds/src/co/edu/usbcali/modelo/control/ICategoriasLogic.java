@@ -1,14 +1,9 @@
 package co.edu.usbcali.modelo.control;
 
+import java.util.List;
+
 import co.edu.usbcali.modelo.Categorias;
 import co.edu.usbcali.modelo.dto.CategoriasDTO;
-
-import java.math.BigDecimal;
-
-import java.util.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -53,4 +48,6 @@ public interface ICategoriasLogic {
     public Long findTotalNumberCategorias() throws Exception;
 
     public List<CategoriasDTO> getDataCategorias() throws Exception;
+    
+	public Long existeCategoria(String nombre)throws Exception;
 }

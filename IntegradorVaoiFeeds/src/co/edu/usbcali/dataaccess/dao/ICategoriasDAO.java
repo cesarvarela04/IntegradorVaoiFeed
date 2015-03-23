@@ -9,4 +9,5 @@ import co.edu.usbcali.modelo.Categorias;
 *
 */
 public interface ICategoriasDAO extends Dao<Categorias, Long> {
+	public Long existeCategoria(String nombre)throws Exception;
 }

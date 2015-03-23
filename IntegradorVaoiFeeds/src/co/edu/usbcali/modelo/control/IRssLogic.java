@@ -1,14 +1,9 @@
 package co.edu.usbcali.modelo.control;
 
+import java.util.List;
+
 import co.edu.usbcali.modelo.Rss;
 import co.edu.usbcali.modelo.dto.RssDTO;
-
-import java.math.BigDecimal;
-
-import java.util.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 
 /**
