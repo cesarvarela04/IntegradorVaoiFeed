@@ -7,16 +7,21 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">          
 	
 	<http security="none" pattern="/login.xhtml" />
+	<http security="none" pattern="/ADMIN/registro.xhtml" />
+	<http security="none" pattern="/USER/registro.xhtml" />
 	
-	
-	<http auto-config="true" access-denied-page="/login.xhtml" access-decision-manager-ref="accessDecisionManager">
+	<http auto-config="true" access-denied-page="/denied.xhtml" access-decision-manager-ref="accessDecisionManager">
 		
-		<intercept-url pattern="/XHTML/*" access="ROLE_USER,Admin" />		
-
-		<form-login login-page="/login.xhtml" default-target-url="/XHTML/initialMenu.xhtml" always-use-default-target="false" authentication-failure-url="/login.xhtml?authfailed=true" />
+		<intercept-url pattern="/USER/*" access="USER" />		
+		<intercept-url pattern="/ADMIN/*" access="ADMIN" />	
 			
+		<form-login login-page="/denied.xhtml" authentication-success-handler-ref="loginAuthenticationSuccessHandler" 
+		always-use-default-target="false" authentication-failure-url="/login.xhtml?authfailed=true" />	
+	     
 		<logout invalidate-session="true" logout-success-url="/login.xhtml?loggedout=true" />
 	</http>
+	
+    <beans:bean id="loginAuthenticationSuccessHandler" class="co.edu.usbcali.security.LoginUrlAuthenticationSuccessHandler" />
 	
 	<beans:bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
 		<beans:property name="decisionVoters">
@@ -29,11 +34,7 @@
 		</beans:property>
 	</beans:bean>
 
-	<authentication-manager>
-		<authentication-provider>
-			<user-service>
-				<user name="admin" password="admin" authorities="ROLE_USER, Admin" />
-			</user-service>
-		</authentication-provider> 
-	</authentication-manager>
+    <authentication-manager>
+        <authentication-provider ref="VortexAuthenticationProvider" />
+    </authentication-manager>
 </beans:beans>
