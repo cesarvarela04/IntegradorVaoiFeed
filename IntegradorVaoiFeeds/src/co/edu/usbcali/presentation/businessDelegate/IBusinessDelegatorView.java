@@ -1,5 +1,7 @@
 package co.edu.usbcali.presentation.businessDelegate;
 
+import java.util.List;
+
 import co.edu.usbcali.modelo.Anexos;
 import co.edu.usbcali.modelo.Articulos;
 import co.edu.usbcali.modelo.Categorias;
@@ -11,28 +13,6 @@ import co.edu.usbcali.modelo.EventosArticulos;
 import co.edu.usbcali.modelo.Roles;
 import co.edu.usbcali.modelo.Rss;
 import co.edu.usbcali.modelo.Usuarios;
-import co.edu.usbcali.modelo.control.AnexosLogic;
-import co.edu.usbcali.modelo.control.ArticulosLogic;
-import co.edu.usbcali.modelo.control.CategoriasArticulosLogic;
-import co.edu.usbcali.modelo.control.CategoriasLogic;
-import co.edu.usbcali.modelo.control.ColeccionesLogic;
-import co.edu.usbcali.modelo.control.ColeccionesRssLogic;
-import co.edu.usbcali.modelo.control.EntradasLogic;
-import co.edu.usbcali.modelo.control.EventosArticulosLogic;
-import co.edu.usbcali.modelo.control.IAnexosLogic;
-import co.edu.usbcali.modelo.control.IArticulosLogic;
-import co.edu.usbcali.modelo.control.ICategoriasArticulosLogic;
-import co.edu.usbcali.modelo.control.ICategoriasLogic;
-import co.edu.usbcali.modelo.control.IColeccionesLogic;
-import co.edu.usbcali.modelo.control.IColeccionesRssLogic;
-import co.edu.usbcali.modelo.control.IEntradasLogic;
-import co.edu.usbcali.modelo.control.IEventosArticulosLogic;
-import co.edu.usbcali.modelo.control.IRolesLogic;
-import co.edu.usbcali.modelo.control.IRssLogic;
-import co.edu.usbcali.modelo.control.IUsuariosLogic;
-import co.edu.usbcali.modelo.control.RolesLogic;
-import co.edu.usbcali.modelo.control.RssLogic;
-import co.edu.usbcali.modelo.control.UsuariosLogic;
 import co.edu.usbcali.modelo.dto.AnexosDTO;
 import co.edu.usbcali.modelo.dto.ArticulosDTO;
 import co.edu.usbcali.modelo.dto.CategoriasArticulosDTO;
@@ -44,18 +24,6 @@ import co.edu.usbcali.modelo.dto.EventosArticulosDTO;
 import co.edu.usbcali.modelo.dto.RolesDTO;
 import co.edu.usbcali.modelo.dto.RssDTO;
 import co.edu.usbcali.modelo.dto.UsuariosDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.context.annotation.Scope;
-
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -322,4 +290,9 @@ public interface IBusinessDelegatorView {
     public Long findTotalNumberUsuarios() throws Exception;
 
     public List<UsuariosDTO> getDataUsuarios() throws Exception;
+    
+    public UsuariosDTO loginUsario(String correo, String pass) throws Exception;
+    
+    public UsuariosDTO consultaUsuarioXEmail(String correo) throws Exception;
+    
 }

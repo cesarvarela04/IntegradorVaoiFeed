@@ -1,9 +1,6 @@
 package co.edu.usbcali.modelo.dto;
 
 import java.io.Serializable;
-
-import java.sql.*;
-
 import java.util.Date;
 
 
@@ -25,6 +22,7 @@ public class UsuariosDTO implements Serializable {
     private String usuCrea;
     private String usuModifica;
     private Long codigoRol_Roles;
+    private String rol;
 
     public String getClave() {
         return clave;
@@ -105,4 +103,14 @@ public class UsuariosDTO implements Serializable {
     public void setCodigoRol_Roles(Long codigoRol_Roles) {
         this.codigoRol_Roles = codigoRol_Roles;
     }
+
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
+	}
+    
+    
 }

@@ -1,14 +1,9 @@
 package co.edu.usbcali.modelo.control;
 
+import java.util.List;
+
 import co.edu.usbcali.modelo.Usuarios;
 import co.edu.usbcali.modelo.dto.UsuariosDTO;
-
-import java.math.BigDecimal;
-
-import java.util.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -53,4 +48,10 @@ public interface IUsuariosLogic {
     public Long findTotalNumberUsuarios() throws Exception;
 
     public List<UsuariosDTO> getDataUsuarios() throws Exception;
+    
+    public UsuariosDTO loginUsario(String correo, String pass) throws Exception;
+    
+    public Long existeCorreo(String correo) throws Exception;
+    
+	public UsuariosDTO consultaUsuarioXEmail(String correo)throws Exception;
 }

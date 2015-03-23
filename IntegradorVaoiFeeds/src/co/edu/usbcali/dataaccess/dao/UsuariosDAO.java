@@ -1,32 +1,21 @@
 package co.edu.usbcali.dataaccess.dao;
 
-import co.edu.usbcali.dataaccess.api.HibernateDaoImpl;
-import co.edu.usbcali.modelo.Usuarios;
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-
-import org.hibernate.criterion.Example;
-
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Resource;
+import co.edu.usbcali.dataaccess.api.HibernateDaoImpl;
+import co.edu.usbcali.modelo.Usuarios;
+import co.edu.usbcali.modelo.dto.UsuariosDTO;
 
 
 /**
@@ -43,11 +32,92 @@ import javax.annotation.Resource;
 @Repository("UsuariosDAO")
 public class UsuariosDAO extends HibernateDaoImpl<Usuarios, Long>
     implements IUsuariosDAO {
-    private static final Logger log = LoggerFactory.getLogger(UsuariosDAO.class);
+    @SuppressWarnings("unused")
+	private static final Logger log = LoggerFactory.getLogger(UsuariosDAO.class);
     @Resource
     private SessionFactory sessionFactory;
 
     public static IUsuariosDAO getFromApplicationContext(ApplicationContext ctx) {
         return (IUsuariosDAO) ctx.getBean("UsuariosDAO");
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public UsuariosDTO loginUsario(String correo, String pass) throws Exception {
+		   
+		UsuariosDTO usuario = null;
+		
+		try {
+			
+			if(correo!=null&&correo.length()>0){
+				correo=correo.toLowerCase();
+			}
+						
+			Query query = getSession().getNamedQuery("loginUsuario");
+			query.setParameter("pCorreo", correo);
+			query.setParameter("pPass", pass);
+			query.setResultTransformer(Transformers.aliasToBean(UsuariosDTO.class));
+			List<UsuariosDTO> lista= query.list();
+			
+			if(lista!=null){			
+				if(lista.size()>0){
+					usuario=lista.get(0);
+				}				
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return usuario;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Long existeCorreo(String correo) throws Exception {
+
+		Long exiten = 0L;
+		try {
+			Query query = getSession().getNamedQuery("existeUsuarioMail");
+			query.setParameter("pCorreo", correo);
+			List<Long> cantA = query.list();
+
+			if (cantA!=null) {
+				exiten=cantA.get(0);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return exiten;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public UsuariosDTO consultaUsuarioXEmail(String correo) throws Exception {
+		UsuariosDTO usuario = null;
+		
+		try {
+			
+			if(correo!=null&&correo.length()>0){
+				correo=correo.toLowerCase();
+			}
+						
+			Query query = getSession().getNamedQuery("consultarUsuarioXEmail");
+			query.setParameter("pCorreo", correo);
+			query.setResultTransformer(Transformers.aliasToBean(UsuariosDTO.class));
+			List<UsuariosDTO> lista= query.list();
+			
+			if(lista!=null){				
+				if(lista.size()>0){
+					usuario=lista.get(0);
+				}				
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return usuario;
+	}
+	
 }
+

@@ -1,32 +1,31 @@
 package co.edu.usbcali.presentation.backingBeans;
 
-import co.edu.usbcali.exceptions.*;
-import co.edu.usbcali.modelo.*;
-import co.edu.usbcali.modelo.dto.UsuariosDTO;
-import co.edu.usbcali.presentation.businessDelegate.*;
-import co.edu.usbcali.utilities.*;
-
-import org.primefaces.component.calendar.*;
-import org.primefaces.component.commandbutton.CommandButton;
-import org.primefaces.component.inputtext.InputText;
-import org.primefaces.event.RowEditEvent;
-
 import java.io.Serializable;
-import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+
+import org.primefaces.component.calendar.Calendar;
+import org.primefaces.component.commandbutton.CommandButton;
+import org.primefaces.component.inputtext.InputText;
+import org.primefaces.event.RowEditEvent;
+
+import co.edu.usbcali.exceptions.ZMessManager;
+import co.edu.usbcali.modelo.Roles;
+import co.edu.usbcali.modelo.Usuarios;
+import co.edu.usbcali.modelo.dto.UsuariosDTO;
+import co.edu.usbcali.presentation.businessDelegate.IBusinessDelegatorView;
+import co.edu.usbcali.utilities.FacesUtils;
 
 /**
  * @author Zathura Code Generator http://code.google.com/p/zathura
@@ -37,10 +36,11 @@ import javax.faces.event.ActionEvent;
 @ViewScoped
 public class UsuariosView implements Serializable {
 	private static final long serialVersionUID = 1L;
-	// private InputText txtClave;
-	// private InputText txtEmail;
+	private String txtClave;
+	private String txtClave2;
+	private String txtEmail;
 	private InputText txtEstadoRegistro;
-	// private InputText txtNombre;
+	private String txtNombre;
 	private InputText txtUsuCrea;
 	private InputText txtUsuModifica;
 	private InputText txtCodigoRol_Roles;
@@ -54,14 +54,8 @@ public class UsuariosView implements Serializable {
 	private List<UsuariosDTO> data;
 	private UsuariosDTO selectedUsuarios;
 	private Usuarios entity;
+	private UsuariosDTO usuario;
 	private boolean showDialog;
-	//
-	private String txtClave;
-	private String txtClave2;
-	private String txtEmail;
-	private String txtNombre;
-
-	//
 	@ManagedProperty(value = "#{BusinessDelegatorView}")
 	private IBusinessDelegatorView businessDelegatorView;
 
@@ -69,9 +63,94 @@ public class UsuariosView implements Serializable {
 		super();
 	}
 
+	@PostConstruct
+	public void consultarUsuario() {
+
+		try {
+			String email = FacesContext.getCurrentInstance().getExternalContext()
+					.getUserPrincipal().getName();
+			
+			
+			if(email!=null&&email.length()>1){
+				usuario=businessDelegatorView.consultaUsuarioXEmail(email);	
+			}else{
+				usuario=new UsuariosDTO();
+				usuario.setRol("No existe ninguna sesion activa");
+			}
+
+		} catch (Exception e) {
+		}
+
+	}
+
+	public String registroAdmin() {
+
+		try {
+			Roles rol = businessDelegatorView.getRoles(1L);
+
+			entity = new Usuarios();
+			entity.setNombre(txtNombre);
+			entity.setClave(txtClave);
+			entity.setEmail(txtEmail);
+			entity.setFechaCreacion(new Date());
+			entity.setFechaModifcacion(new Date());
+			entity.setUsuCrea("Registro");
+			entity.setUsuModifica("Registro");
+			entity.setEstadoRegistro("A");
+			entity.setRoles(rol);
+
+			if (txtClave.equals(txtClave2)) {
+
+			} else {
+				throw new Exception("No coincide la contraseña ingresada");
+			}
+
+			businessDelegatorView.saveUsuarios(entity);
+			FacesUtils.addInfoMessage("Registro Exitoso");
+
+		} catch (Exception e) {
+			FacesUtils.addErrorMessage(e.getMessage());
+		}
+
+		return "";
+	}
+
+	public String registroUsuario() {
+
+		try {
+			Roles rol = businessDelegatorView.getRoles(2L);
+
+			entity = new Usuarios();
+			entity.setNombre(txtNombre);
+			entity.setClave(txtClave);
+			entity.setEmail(txtEmail);
+			entity.setFechaCreacion(new Date());
+			entity.setFechaModifcacion(new Date());
+			entity.setUsuCrea("Registro");
+			entity.setUsuModifica("Registro");
+			entity.setEstadoRegistro("A");
+			entity.setRoles(rol);
+
+			if (txtClave.equals(txtClave2)) {
+
+			} else {
+				throw new Exception("No coincide la contraseña ingresada");
+			}
+
+			businessDelegatorView.saveUsuarios(entity);
+			FacesUtils.addInfoMessage("Registro Exitoso");
+
+		} catch (Exception e) {
+			FacesUtils.addErrorMessage(e.getMessage());
+		}
+
+		return "";
+	}
+
 	public void rowEventListener(RowEditEvent e) {
 		try {
 			UsuariosDTO usuariosDTO = (UsuariosDTO) e.getObject();
+
 			/*
 			 * if (txtClave == null) { txtClave = new InputText(); }
 			 * 
@@ -81,16 +160,19 @@ public class UsuariosView implements Serializable {
 			 * 
 			 * txtEmail.setValue(usuariosDTO.getEmail());
 			 */
+
 			if (txtEstadoRegistro == null) {
 				txtEstadoRegistro = new InputText();
 			}
 
 			txtEstadoRegistro.setValue(usuariosDTO.getEstadoRegistro());
+
 			/*
 			 * if (txtNombre == null) { txtNombre = new InputText(); }
 			 * 
 			 * txtNombre.setValue(usuariosDTO.getNombre());
 			 */
+
 			if (txtUsuCrea == null) {
 				txtUsuCrea = new InputText();
 			}
@@ -146,6 +228,7 @@ public class UsuariosView implements Serializable {
 	public String action_clear() {
 		entity = null;
 		selectedUsuarios = null;
+
 		/*
 		 * if (txtClave != null) { txtClave.setValue(null);
 		 * txtClave.setDisabled(true); }
@@ -153,14 +236,17 @@ public class UsuariosView implements Serializable {
 		 * if (txtEmail != null) { txtEmail.setValue(null);
 		 * txtEmail.setDisabled(true); }
 		 */
+
 		if (txtEstadoRegistro != null) {
 			txtEstadoRegistro.setValue(null);
 			txtEstadoRegistro.setDisabled(true);
 		}
+
 		/*
 		 * if (txtNombre != null) { txtNombre.setValue(null);
 		 * txtNombre.setDisabled(true); }
 		 */
+
 		if (txtUsuCrea != null) {
 			txtUsuCrea.setValue(null);
 			txtUsuCrea.setDisabled(true);
@@ -205,21 +291,26 @@ public class UsuariosView implements Serializable {
 	public void listener_txtFechaCreacion() {
 		Date inputDate = (Date) txtFechaCreacion.getValue();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		FacesContext.getCurrentInstance().addMessage("",
-				new FacesMessage("Selected Date " + dateFormat.format(inputDate)));
+		FacesContext.getCurrentInstance().addMessage(
+				"",
+				new FacesMessage("Selected Date "
+						+ dateFormat.format(inputDate)));
 	}
 
 	public void listener_txtFechaModifcacion() {
 		Date inputDate = (Date) txtFechaModifcacion.getValue();
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		FacesContext.getCurrentInstance().addMessage("",
-				new FacesMessage("Selected Date " + dateFormat.format(inputDate)));
+		FacesContext.getCurrentInstance().addMessage(
+				"",
+				new FacesMessage("Selected Date "
+						+ dateFormat.format(inputDate)));
 	}
 
 	public void listener_txtId() {
 		try {
 			Long codigoUsua = FacesUtils.checkLong(txtCodigoUsua);
-			entity = (codigoUsua != null) ? businessDelegatorView.getUsuarios(codigoUsua) : null;
+			entity = (codigoUsua != null) ? businessDelegatorView
+					.getUsuarios(codigoUsua) : null;
 		} catch (Exception e) {
 			entity = null;
 		}
@@ -271,7 +362,8 @@ public class UsuariosView implements Serializable {
 	}
 
 	public String action_edit(ActionEvent evt) {
-		selectedUsuarios = (UsuariosDTO) (evt.getComponent().getAttributes().get("selectedUsuarios"));
+		selectedUsuarios = (UsuariosDTO) (evt.getComponent().getAttributes()
+				.get("selectedUsuarios"));
 		/*
 		 * txtClave.setValue(selectedUsuarios.getClave());
 		 * txtClave.setDisabled(false);
@@ -329,7 +421,8 @@ public class UsuariosView implements Serializable {
 			entity.setEmail(FacesUtils.checkString(txtEmail));
 			entity.setEstadoRegistro(FacesUtils.checkString(txtEstadoRegistro));
 			entity.setFechaCreacion(FacesUtils.checkDate(txtFechaCreacion));
-			entity.setFechaModifcacion(FacesUtils.checkDate(txtFechaModifcacion));
+			entity.setFechaModifcacion(FacesUtils
+					.checkDate(txtFechaModifcacion));
 			entity.setNombre(FacesUtils.checkString(txtNombre));
 			entity.setUsuCrea(FacesUtils.checkString(txtUsuCrea));
 			entity.setUsuModifica(FacesUtils.checkString(txtUsuModifica));
@@ -357,7 +450,8 @@ public class UsuariosView implements Serializable {
 			entity.setEmail(FacesUtils.checkString(txtEmail));
 			entity.setEstadoRegistro(FacesUtils.checkString(txtEstadoRegistro));
 			entity.setFechaCreacion(FacesUtils.checkDate(txtFechaCreacion));
-			entity.setFechaModifcacion(FacesUtils.checkDate(txtFechaModifcacion));
+			entity.setFechaModifcacion(FacesUtils
+					.checkDate(txtFechaModifcacion));
 			entity.setNombre(FacesUtils.checkString(txtNombre));
 			entity.setUsuCrea(FacesUtils.checkString(txtUsuCrea));
 			entity.setUsuModifica(FacesUtils.checkString(txtUsuModifica));
@@ -375,7 +469,8 @@ public class UsuariosView implements Serializable {
 
 	public String action_delete_datatable(ActionEvent evt) {
 		try {
-			selectedUsuarios = (UsuariosDTO) (evt.getComponent().getAttributes().get("selectedUsuarios"));
+			selectedUsuarios = (UsuariosDTO) (evt.getComponent()
+					.getAttributes().get("selectedUsuarios"));
 
 			Long codigoUsua = new Long(selectedUsuarios.getCodigoUsua());
 			entity = businessDelegatorView.getUsuarios(codigoUsua);
@@ -419,7 +514,8 @@ public class UsuariosView implements Serializable {
 
 	public String actionDeleteDataTableEditable(ActionEvent evt) {
 		try {
-			selectedUsuarios = (UsuariosDTO) (evt.getComponent().getAttributes().get("selectedUsuarios"));
+			selectedUsuarios = (UsuariosDTO) (evt.getComponent()
+					.getAttributes().get("selectedUsuarios"));
 
 			Long codigoUsua = new Long(selectedUsuarios.getCodigoUsua());
 			entity = businessDelegatorView.getUsuarios(codigoUsua);
@@ -434,9 +530,10 @@ public class UsuariosView implements Serializable {
 		return "";
 	}
 
-	public String action_modifyWitDTO(String clave, Long codigoUsua, String email, String estadoRegistro,
-			Date fechaCreacion, Date fechaModifcacion, String nombre, String usuCrea, String usuModifica,
-			Long codigoRol_Roles) throws Exception {
+	public String action_modifyWitDTO(String clave, Long codigoUsua,
+			String email, String estadoRegistro, Date fechaCreacion,
+			Date fechaModifcacion, String nombre, String usuCrea,
+			String usuModifica, Long codigoRol_Roles) throws Exception {
 		try {
 			entity.setClave(FacesUtils.checkString(clave));
 			entity.setEmail(FacesUtils.checkString(email));
@@ -465,24 +562,8 @@ public class UsuariosView implements Serializable {
 		this.txtClave = txtClave;
 	}
 
-	public String getTxtClave2() {
-		return txtClave2;
-	}
-
-	public void setTxtClave2(String txtClave2) {
-		this.txtClave2 = txtClave2;
-	}
-
-	public String getTxtNombre() {
-		return txtNombre;
-	}
-
-	public void setTxtNombre(String txtNombre) {
-		this.txtNombre = txtNombre;
-	}
-
-	public void setTxtEstadoRegistro(InputText txtEstadoRegistro) {
-		this.txtEstadoRegistro = txtEstadoRegistro;
+	public String getTxtEmail() {
+		return txtEmail;
 	}
 
 	public void setTxtEmail(String txtEmail) {
@@ -493,8 +574,16 @@ public class UsuariosView implements Serializable {
 		return txtEstadoRegistro;
 	}
 
-	public String getTxtEmail() {
-		return txtEmail;
+	public void setTxtEstadoRegistro(InputText txtEstadoRegistro) {
+		this.txtEstadoRegistro = txtEstadoRegistro;
+	}
+
+	public String getTxtNombre() {
+		return txtNombre;
+	}
+
+	public void setTxtNombre(String txtNombre) {
+		this.txtNombre = txtNombre;
 	}
 
 	public InputText getTxtUsuCrea() {
@@ -609,7 +698,8 @@ public class UsuariosView implements Serializable {
 		return businessDelegatorView;
 	}
 
-	public void setBusinessDelegatorView(IBusinessDelegatorView businessDelegatorView) {
+	public void setBusinessDelegatorView(
+			IBusinessDelegatorView businessDelegatorView) {
 		this.businessDelegatorView = businessDelegatorView;
 	}
 
@@ -620,4 +710,21 @@ public class UsuariosView implements Serializable {
 	public void setShowDialog(boolean showDialog) {
 		this.showDialog = showDialog;
 	}
+
+	public String getTxtClave2() {
+		return txtClave2;
+	}
+
+	public void setTxtClave2(String txtClave2) {
+		this.txtClave2 = txtClave2;
+	}
+
+	public UsuariosDTO getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(UsuariosDTO usuario) {
+		this.usuario = usuario;
+	}
+
 }
