@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 16/03/2015 02:47:54 PM by Hibernate Tools 4.0.0 -->
+<!-- Generated 6/03/2015 04:42:17 PM by Hibernate Tools 4.0.0 -->
 <hibernate-mapping>
     <class name="co.edu.usbcali.modelo.Colecciones" table="colecciones" schema="public">
         <id name="codigoCole" type="java.lang.Long">
             <column name="codigo_cole" />
             <generator class="sequence">
-				<param name="sequence">colecciones_codigo_cole_seq</param>
+				<param name="sequence">colecciones_codigo_cole_seq</param>				
 			</generator> 
         </id>
         <many-to-one name="usuarios" class="co.edu.usbcali.modelo.Usuarios" fetch="select">
@@ -23,4 +23,25 @@
             <one-to-many class="co.edu.usbcali.modelo.ColeccionesRss" />
         </set>
     </class>
+    <sql-query name="consultarColeccionesUsuario">
+        
+        <return-scalar column="codigoCole" type="java.lang.Long" />
+		<return-scalar column="nombre" type="java.lang.String" />
+        
+	  <![CDATA[SELECT cole.codigo_cole codigoCole,
+	                  cole.nombre
+	                  FROM
+                 COLECCIONES cole
+                INNER JOIN USUARIOS usu ON usu.codigo_usua=cole.usuarios_codigo_usua
+               WHERE usu.email=:pCorreo]]>
+    </sql-query>
+    
+    <sql-query name="existeColecciones">
+	
+	<return-scalar column="cont" type="java.lang.Long" />
+
+	<![CDATA[SELECT COUNT(*) cont
+                 FROM COLECCIONES cole
+                 WHERE cole.nombre=:pNombre]]>
+    </sql-query>
 </hibernate-mapping>

@@ -26,4 +26,17 @@
             <one-to-many class="co.edu.usbcali.modelo.Entradas" />
         </set>
     </class>
+    
+     <sql-query name="consultarRssColeccion">
+        
+        <return-scalar column="codigoRss" type="java.lang.Long" />
+		<return-scalar column="url" type="java.lang.String" />
+        
+	  <![CDATA[SELECT rs.codigo_rss codigoRss,
+	                  rs.url
+	                  FROM
+                 RSS rs
+                INNER JOIN COLECCIONES_RSS cole ON cole.rss_codigo_rss=rs.codigo_rss
+               WHERE cole.colecciones_codigo_cole=:pCodigoCole]]>
+    </sql-query>
 </hibernate-mapping>
