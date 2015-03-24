@@ -73,6 +73,17 @@
           <ul class="sidebar-menu">
 		  
             <li class="header" >Panel de Navegación</li>
+            
+            	<li><a
+					href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/USER/coleccion.xhtml">
+						<i class="fa fa-folder-o"></i> <span>Gestión Colección</span>
+				</a></li>
+				
+			<li>
+              <a href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/USER/rss.xhtml">
+                <i class="fa fa-rss-square"></i> <span>Gestión RSS</span>
+              </a>
+            </li> 
 
         <!--     <li>
               <a href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/ADMIN/categorias.xhtml">

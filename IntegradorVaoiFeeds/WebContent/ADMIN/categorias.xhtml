@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
@@ -86,7 +88,19 @@
             
              <li>
               <a href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/ADMIN/articulo.xhtml">
-                <i class="fa fa-newspaper-o"></i> <span>Gestión Articulo</span>
+                <i class="fa fa-newspaper-o"></i> <span>Gestión Articulos</span>
+              </a>
+            </li> 
+            
+            <li>
+              <a href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/ADMIN/coleccion.xhtml">
+                <i class="fa fa-folder-o"></i> <span>Gestión Colección</span>
+              </a>
+            </li> 
+            
+            <li>
+              <a href="#{facesContext.externalContext.request.scheme}://#{facesContext.externalContext.request.serverName}:#{facesContext.externalContext.request.serverPort}#{facesContext.externalContext.request.contextPath}/ADMIN/rss.xhtml">
+                <i class="fa fa-rss-square"></i> <span>Gestión RSS</span>
               </a>
             </li> 
 			
@@ -115,17 +129,16 @@
 					<p:panel id="panelCategorias" header="Categorias" >
 						<h:panelGrid columns="2" id="panelGrid" style="margin: 0 auto;">
 						
-							<h:outputText id="msgNombre" value=" Nombre:" />
-							<p:inputText id="txtNombre" 
+							<h:outputText id="msgNombre" value=" Nombre: " />
+							<p:inputText id="txtNombre" type="text" class="form-control"
 								binding="#{categoriasView.txtNombre}" />
 								
-							<h:outputText id="msgEstadoRegistro" value=" Estado:" />
-							<p:selectOneMenu id="txtEstadoRegistro"
-								value="#{categoriasView.estado}" 
-								 style="width:100%">
+							<h:outputText id="msgEstadoRegistro" value=" Estado: " />
+							<h:selectOneMenu class="form-control text-center"
+								value="#{categoriasView.estado}">
 								<f:selectItem itemLabel="Activo" itemValue="A" />
 								<f:selectItem itemLabel="Retirado" itemValue="R" />
-							</p:selectOneMenu>
+							</h:selectOneMenu>
 
 						</h:panelGrid>
 					</p:panel>
@@ -185,10 +198,6 @@
 		  </f:view>
         </section>
 
-        <!-- Main content -->
-        <section class="content">
-
-        </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
 
       <footer class="main-footer">
