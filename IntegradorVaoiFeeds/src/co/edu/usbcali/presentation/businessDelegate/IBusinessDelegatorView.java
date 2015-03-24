@@ -295,4 +295,10 @@ public interface IBusinessDelegatorView {
     
     public UsuariosDTO consultaUsuarioXEmail(String correo) throws Exception;
     
+    public List<ColeccionesDTO> coleccionesUsuario(String correo)
+			throws Exception;
+    
+	public List<RssDTO> rssColeccion(Long codigoCole) throws Exception;
+	
+    
 }

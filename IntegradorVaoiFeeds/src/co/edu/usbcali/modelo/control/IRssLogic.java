@@ -47,4 +47,6 @@ public interface IRssLogic {
     public Long findTotalNumberRss() throws Exception;
 
     public List<RssDTO> getDataRss() throws Exception;
+    
+    public List<RssDTO> rssColeccion(Long codigoCole)throws Exception;
 }

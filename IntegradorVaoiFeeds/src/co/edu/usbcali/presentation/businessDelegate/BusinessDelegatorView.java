@@ -643,4 +643,15 @@ public class BusinessDelegatorView implements IBusinessDelegatorView {
 	public UsuariosDTO consultaUsuarioXEmail(String correo) throws Exception {
 		return usuariosLogic.consultaUsuarioXEmail(correo);
 	}
+
+	@Override
+	public List<ColeccionesDTO> coleccionesUsuario(String correo)
+			throws Exception {
+		return coleccionesLogic.coleccionesUsuario(correo);
+	}
+
+	@Override
+	public List<RssDTO> rssColeccion(Long codigoCole) throws Exception {
+		return rssLogic.rssColeccion(codigoCole);
+	}
 }

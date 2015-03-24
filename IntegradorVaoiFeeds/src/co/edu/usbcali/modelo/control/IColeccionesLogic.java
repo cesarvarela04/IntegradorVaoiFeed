@@ -49,4 +49,8 @@ public interface IColeccionesLogic {
     public Long findTotalNumberColecciones() throws Exception;
 
     public List<ColeccionesDTO> getDataColecciones() throws Exception;
+    
+    public List<ColeccionesDTO> coleccionesUsuario(String correo) throws Exception;
+    
+    public Long existeColecciones(String nombre) throws Exception;
 }

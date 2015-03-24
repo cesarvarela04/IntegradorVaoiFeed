@@ -67,30 +67,30 @@ public class ColeccionesLogic implements IColeccionesLogic {
     public void saveColecciones(Colecciones entity) throws Exception {
         try {
             if (entity.getUsuarios() == null) {
-                throw new ZMessManager().new ForeignException("usuarios");
-            }
-
-            if (entity.getCodigoCole() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoCole");
+                throw new Exception("El usuario no puede estar nulo");
             }
 
             if (entity.getNombre() == null) {
-                throw new ZMessManager().new EmptyFieldException("nombre");
+                throw new Exception("El Nombre no puede estar nulo");
             }
 
             if ((entity.getNombre() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getNombre(),
                         150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("nombre");
+                throw new Exception("El Nombre no puede tener mas de 150 caracteres");
             }
 
             if (entity.getUsuarios().getCodigoUsua() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "codigoUsua_Usuarios");
+                throw new Exception(
+                    "El código de usuario no puede estar vacio");
             }
-
-            if (getColecciones(entity.getCodigoCole()) != null) {
-                throw new ZMessManager(ZMessManager.ENTITY_WITHSAMEKEY);
+            
+            entity.setNombre(entity.getNombre().toUpperCase());
+            
+            Long existe=existeColecciones(entity.getNombre());
+            
+            if(existe>=1){
+            	throw new Exception("Ya existe la Colección ingresada");
             }
 
             coleccionesDAO.save(entity);
@@ -131,34 +131,40 @@ public class ColeccionesLogic implements IColeccionesLogic {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void updateColecciones(Colecciones entity) throws Exception {
         try {
-            if (entity == null) {
-                throw new ZMessManager().new NullEntityExcepcion("Colecciones");
-            }
-
             if (entity.getUsuarios() == null) {
-                throw new ZMessManager().new ForeignException("usuarios");
-            }
-
-            if (entity.getCodigoCole() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoCole");
+                throw new Exception("El usuario no puede estar nulo");
             }
 
             if (entity.getNombre() == null) {
-                throw new ZMessManager().new EmptyFieldException("nombre");
+                throw new Exception("El Nombre no puede estar nulo");
             }
 
             if ((entity.getNombre() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getNombre(),
                         150) == false)) {
-                throw new ZMessManager().new NotValidFormatException("nombre");
+                throw new Exception("El Nombre no puede tener mas de 150 caracteres");
             }
 
             if (entity.getUsuarios().getCodigoUsua() == null) {
-                throw new ZMessManager().new EmptyFieldException(
-                    "codigoUsua_Usuarios");
+                throw new Exception(
+                    "El código de usuario no puede estar vacio");
+            }
+            
+            entity.setNombre(entity.getNombre().toUpperCase());
+            
+            Colecciones coleccionesBD=getColecciones(entity.getCodigoCole());
+            
+            if(entity.getNombre().equalsIgnoreCase(coleccionesBD.getNombre())){
+            	
+            }else{
+                Long existe=existeColecciones(entity.getNombre());
+                
+                if(existe>=1){
+                	throw new Exception("Ya existe la colección ingresada");
+                }
             }
 
-            coleccionesDAO.update(entity);
+            coleccionesDAO.merge(entity);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -402,4 +408,18 @@ public class ColeccionesLogic implements IColeccionesLogic {
 
         return list;
     }
+    
+    @Transactional(readOnly = true)
+	@Override
+	public List<ColeccionesDTO> coleccionesUsuario(String correo)
+			throws Exception {
+
+		return coleccionesDAO.coleccionesUsuario(correo);
+	}
+
+    @Transactional(readOnly = true)
+	@Override
+	public Long existeColecciones(String nombre) throws Exception {
+		return coleccionesDAO.existeColecciones(nombre);
+	}
 }

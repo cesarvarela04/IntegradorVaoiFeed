@@ -4,21 +4,28 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.component.commandbutton.CommandButton;
 import org.primefaces.component.inputtext.InputText;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 
 import co.edu.usbcali.exceptions.ZMessManager;
 import co.edu.usbcali.modelo.Rss;
+import co.edu.usbcali.modelo.dto.ColeccionesDTO;
 import co.edu.usbcali.modelo.dto.RssDTO;
+import co.edu.usbcali.modelo.dto.UsuariosDTO;
 import co.edu.usbcali.presentation.businessDelegate.IBusinessDelegatorView;
 import co.edu.usbcali.utilities.FacesUtils;
-
 
 /**
  * @author Zathura Code Generator http://code.google.com/p/zathura
@@ -30,6 +37,7 @@ import co.edu.usbcali.utilities.FacesUtils;
 public class RssView implements Serializable {
     private static final long serialVersionUID = 1L;
     private InputText txtUrl;
+    private InputText txtUrlModificar;
     private InputText txtCodigoRss;
     private CommandButton btnSave;
     private CommandButton btnModify;
@@ -41,9 +49,146 @@ public class RssView implements Serializable {
     private boolean showDialog;
     @ManagedProperty(value = "#{BusinessDelegatorView}")
     private IBusinessDelegatorView businessDelegatorView;
-
+    UsuariosDTO usuario; 
+    private TreeNode raizColecciones;
+    private TreeNode seleccionColecciones;
+    private List<ColeccionesDTO> colecciones;
+    private ColeccionesDTO selectedColeccion;
+    
+    private TreeNode raizRss;
+    private TreeNode seleccionRss;
+    
     public RssView() {
         super();
+    }
+    
+	@PostConstruct
+    public void traerColecciones(){
+		
+		usuario=(UsuariosDTO) FacesUtils.getManagedBeanFromSession("usuario");
+
+		raizColecciones=new DefaultTreeNode("Raiz", null);
+		
+		String email = FacesContext.getCurrentInstance().getExternalContext()
+				.getUserPrincipal().getName();
+		
+		try {
+			colecciones=businessDelegatorView.coleccionesUsuario(email);
+			for (ColeccionesDTO categorias : colecciones) {
+				 new DefaultTreeNode(categorias, raizColecciones);
+				 //TreeNode nodo =
+			}
+			
+		} catch (Exception e) {
+
+		}		
+    }
+	
+    public String crear(){
+    	try {
+        	selectedColeccion=(ColeccionesDTO) seleccionColecciones.getData();
+        	txtUrl.setValue(null);
+        	
+		} catch (Exception e) {
+		}
+    	
+    	return "";
+    }
+    
+    public String ver(){
+    	try {
+        	selectedColeccion=(ColeccionesDTO) seleccionColecciones.getData();
+        	raizRss=new DefaultTreeNode("Raiz", null);
+			data=businessDelegatorView.rssColeccion(selectedColeccion.getCodigoCole());
+			for (RssDTO rss : data) {
+				 new DefaultTreeNode(rss, raizRss);
+				 //TreeNode nodo =
+			}
+			
+			if(data==null||data.size()==0){
+				FacesUtils.addInfoMessage("Coleccion vacia");
+			}
+        	
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+    	
+    	return "";
+    }
+    
+    public void onNodeSelect(NodeSelectEvent event){
+    	try {
+        	selectedColeccion=(ColeccionesDTO) event.getTreeNode().getData();
+        	raizRss=new DefaultTreeNode("Raiz", null);
+			data=businessDelegatorView.rssColeccion(selectedColeccion.getCodigoCole());
+			for (RssDTO rss : data) {
+				 new DefaultTreeNode(rss, raizRss);
+				 //TreeNode nodo =
+			}
+			
+			if(data==null||data.size()==0){
+				FacesUtils.addInfoMessage("Coleccion vacia");
+			}
+        	
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+    }
+    
+    public String modificar(){
+    	try {
+        	selectedRss=(RssDTO) seleccionRss.getData();
+        	txtUrlModificar.setValue(selectedRss.getUrl());
+		} catch (Exception e) {
+		}
+    	
+    	return "";
+    }
+    
+    public String action_create() {
+        try {
+        	
+        	if(selectedColeccion!=null){
+                entity = new Rss();
+                entity.setCodigoCole(selectedColeccion.getCodigoCole());
+                entity.setUrl(FacesUtils.checkString(txtUrl));
+                businessDelegatorView.saveRss(entity);
+                FacesUtils.addInfoMessage("Se creo el RSS con exito");
+            	ver();
+            	RequestContext.getCurrentInstance().execute("PF('dlgRSS').hide()");
+        	}else{
+        		FacesUtils.addErrorMessage("Seleccione colección");
+        		RequestContext.getCurrentInstance().execute("PF('dlgRSS').show()");
+        	}
+        	
+
+        } catch (Exception e) {
+            entity = null;
+            FacesUtils.addErrorMessage(e.getMessage());
+        }
+
+        return "";
+    }
+    
+    public String action_modify() {
+        try {
+            if (entity == null) {
+                Long codigoRss = new Long(selectedRss.getCodigoRss());
+                entity = businessDelegatorView.getRss(codigoRss);
+            }
+
+            entity.setUrl(FacesUtils.checkString(txtUrlModificar));
+            businessDelegatorView.updateRss(entity);
+            FacesUtils.addInfoMessage("El RSS se modificon con exito");
+            ver();
+            RequestContext.getCurrentInstance().execute("PF('dlgModificar').hide()");
+        } catch (Exception e) {
+            data = null;
+            FacesUtils.addErrorMessage(e.getMessage());
+            RequestContext.getCurrentInstance().execute("PF('dlgModificar').show()");
+        }
+
+        return "";
     }
 
     public void rowEventListener(RowEditEvent e) {
@@ -152,43 +297,6 @@ public class RssView implements Serializable {
 
             data = null;
         } catch (Exception e) {
-            FacesUtils.addErrorMessage(e.getMessage());
-        }
-
-        return "";
-    }
-
-    public String action_create() {
-        try {
-            entity = new Rss();
-
-            Long codigoRss = FacesUtils.checkLong(txtCodigoRss);
-
-            entity.setCodigoRss(codigoRss);
-            entity.setUrl(FacesUtils.checkString(txtUrl));
-            businessDelegatorView.saveRss(entity);
-            FacesUtils.addInfoMessage(ZMessManager.ENTITY_SUCCESFULLYSAVED);
-            action_clear();
-        } catch (Exception e) {
-            entity = null;
-            FacesUtils.addErrorMessage(e.getMessage());
-        }
-
-        return "";
-    }
-
-    public String action_modify() {
-        try {
-            if (entity == null) {
-                Long codigoRss = new Long(selectedRss.getCodigoRss());
-                entity = businessDelegatorView.getRss(codigoRss);
-            }
-
-            entity.setUrl(FacesUtils.checkString(txtUrl));
-            businessDelegatorView.updateRss(entity);
-            FacesUtils.addInfoMessage(ZMessManager.ENTITY_SUCCESFULLYMODIFIED);
-        } catch (Exception e) {
-            data = null;
             FacesUtils.addErrorMessage(e.getMessage());
         }
 
@@ -365,4 +473,47 @@ public class RssView implements Serializable {
     public void setShowDialog(boolean showDialog) {
         this.showDialog = showDialog;
     }
+
+	public TreeNode getRaizColecciones() {
+		return raizColecciones;
+	}
+
+	public void setRaizColecciones(TreeNode raizColecciones) {
+		this.raizColecciones = raizColecciones;
+	}
+
+	public TreeNode getSeleccionColecciones() {
+		return seleccionColecciones;
+	}
+
+	public void setSeleccionColecciones(TreeNode seleccionColecciones) {
+		this.seleccionColecciones = seleccionColecciones;
+	}
+
+	public TreeNode getRaizRss() {
+		return raizRss;
+	}
+
+	public void setRaizRss(TreeNode raizRss) {
+		this.raizRss = raizRss;
+	}
+
+	public TreeNode getSeleccionRss() {
+		return seleccionRss;
+	}
+
+	public void setSeleccionRss(TreeNode seleccionRss) {
+		this.seleccionRss = seleccionRss;
+	}
+
+	public InputText getTxtUrlModificar() {
+		return txtUrlModificar;
+	}
+
+	public void setTxtUrlModificar(InputText txtUrlModificar) {
+		this.txtUrlModificar = txtUrlModificar;
+	}
+    
+	
+    
 }

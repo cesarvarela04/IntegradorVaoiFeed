@@ -1,5 +1,5 @@
 package co.edu.usbcali.modelo;
-// Generated 16/03/2015 02:47:53 PM by Hibernate Tools 4.0.0
+// Generated 6/03/2015 04:42:17 PM by Hibernate Tools 4.0.0
 
 
 import java.util.HashSet;
@@ -11,11 +11,15 @@ import java.util.Set;
 public class Rss  implements java.io.Serializable {
 
 
-     private Long codigoRss;
+     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Long codigoRss;
      private String url;
      private Set<ColeccionesRss> coleccionesRsses = new HashSet<ColeccionesRss>(0);
      private Set<Entradas> entradases = new HashSet<Entradas>(0);
-
+     private Long codigoCole;
     public Rss() {
     }
 
@@ -61,8 +65,12 @@ public class Rss  implements java.io.Serializable {
     }
 
 
+	public Long getCodigoCole() {
+		return codigoCole;
+	}
 
+	public void setCodigoCole(Long codigoCole) {
+		this.codigoCole = codigoCole;
+	}
 
 }
-
-

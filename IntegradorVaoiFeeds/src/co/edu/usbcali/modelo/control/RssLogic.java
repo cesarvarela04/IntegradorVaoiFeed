@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.edu.usbcali.dataaccess.dao.IColeccionesDAO;
 import co.edu.usbcali.dataaccess.dao.IColeccionesRssDAO;
 import co.edu.usbcali.dataaccess.dao.IEntradasDAO;
 import co.edu.usbcali.dataaccess.dao.IRssDAO;
@@ -35,6 +36,9 @@ public class RssLogic implements IRssLogic {
      */
     @Autowired
     private IRssDAO rssDAO;
+    
+    @Autowired
+    private IColeccionesDAO coleccionesDAO;
 
     /**
     * DAO injected by Spring that manages ColeccionesRss entities
@@ -68,24 +72,23 @@ public class RssLogic implements IRssLogic {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void saveRss(Rss entity) throws Exception {
         try {
-            if (entity.getCodigoRss() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoRss");
-            }
 
             if (entity.getUrl() == null) {
-                throw new ZMessManager().new EmptyFieldException("url");
+                throw new Exception("La Url no puede estar nula");
             }
 
             if ((entity.getUrl() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getUrl(), 500) == false)) {
-                throw new ZMessManager().new NotValidFormatException("url");
-            }
-
-            if (getRss(entity.getCodigoRss()) != null) {
-                throw new ZMessManager(ZMessManager.ENTITY_WITHSAMEKEY);
+                throw new Exception("La Url no puede tener mas de 500 caracteres");
             }
 
             rssDAO.save(entity);
+            
+        	ColeccionesRss coleRss=new ColeccionesRss();
+        	coleRss.setRss(entity);
+        	coleRss.setColecciones(coleccionesDAO.findById(entity.getCodigoCole()));
+        	coleccionesRssDAO.save(coleRss);
+            
         } catch (Exception e) {
             throw e;
         } finally {
@@ -131,24 +134,17 @@ public class RssLogic implements IRssLogic {
     @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
     public void updateRss(Rss entity) throws Exception {
         try {
-            if (entity == null) {
-                throw new ZMessManager().new NullEntityExcepcion("Rss");
-            }
-
-            if (entity.getCodigoRss() == null) {
-                throw new ZMessManager().new EmptyFieldException("codigoRss");
-            }
-
+        	
             if (entity.getUrl() == null) {
-                throw new ZMessManager().new EmptyFieldException("url");
+                throw new Exception("La Url no puede estar nula");
             }
 
             if ((entity.getUrl() != null) &&
                     (Utilities.checkWordAndCheckWithlength(entity.getUrl(), 500) == false)) {
-                throw new ZMessManager().new NotValidFormatException("url");
+                throw new Exception("La Url no puede tener mas de 500 caracteres");
             }
 
-            rssDAO.update(entity);
+            rssDAO.merge(entity);
         } catch (Exception e) {
             throw e;
         } finally {
@@ -386,4 +382,10 @@ public class RssLogic implements IRssLogic {
 
         return list;
     }
+
+    @Transactional(readOnly = true)
+	@Override
+	public List<RssDTO> rssColeccion(Long codigoCole) throws Exception {
+		return rssDAO.rssColeccion(codigoCole);
+	}
 }

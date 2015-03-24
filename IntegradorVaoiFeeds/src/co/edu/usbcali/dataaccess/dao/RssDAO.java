@@ -1,8 +1,12 @@
 package co.edu.usbcali.dataaccess.dao;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import co.edu.usbcali.dataaccess.api.HibernateDaoImpl;
 import co.edu.usbcali.modelo.Rss;
+import co.edu.usbcali.modelo.dto.RssDTO;
 
 
 /**
@@ -34,4 +39,26 @@ public class RssDAO extends HibernateDaoImpl<Rss, Long> implements IRssDAO {
     public static IRssDAO getFromApplicationContext(ApplicationContext ctx) {
         return (IRssDAO) ctx.getBean("RssDAO");
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RssDTO> rssColeccion(Long codigoCole)throws Exception {
+				
+		List<RssDTO> lista=null;
+		
+		try {
+						
+			Query query = getSession().getNamedQuery("consultarRssColeccion");
+			query.setParameter("pCodigoCole", codigoCole);
+			query.setResultTransformer(Transformers.aliasToBean(RssDTO.class));
+			lista= query.list();
+	
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return lista;
+	}
+    
+    
 }
