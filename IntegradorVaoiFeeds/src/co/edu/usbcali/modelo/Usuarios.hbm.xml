@@ -56,4 +56,52 @@
             <one-to-many class="co.edu.usbcali.modelo.EventosArticulos" />
         </set>
     </class>
+    
+    <sql-query name="loginUsuario">
+        
+        <return-scalar column="codigoUsua" type="java.lang.Long" />
+		<return-scalar column="email" type="java.lang.String" />
+		<return-scalar column="nombre" type="java.lang.String" />
+	    <return-scalar column="codigoRol_Roles" type="java.lang.Long" />
+        
+	  <![CDATA[SELECT usu.email,
+	                  usu.nombre,
+	                  usu.codigo_usua AS codigoUsua,
+	                  usu.Roles_codigo_Rol AS codigoRol_Roles
+	                  FROM
+                 USUARIOS usu
+               WHERE usu.estado_registro='A'
+               AND usu.email=:pCorreo
+               AND usu.clave=:pPass]]>
+    </sql-query>
+    
+   <sql-query name="existeUsuarioMail">
+	
+	<return-scalar column="cont" type="java.lang.Long" />
+
+	<![CDATA[SELECT COUNT(*) cont
+                 FROM USUARIOS usu
+                 WHERE usu.email=:pCorreo]]>
+    </sql-query>
+    
+       <sql-query name="consultarUsuarioXEmail">
+        
+        <return-scalar column="codigoUsua" type="java.lang.Long" />
+		<return-scalar column="email" type="java.lang.String" />
+		<return-scalar column="nombre" type="java.lang.String" />
+	    <return-scalar column="codigoRol_Roles" type="java.lang.Long" />
+	    <return-scalar column="rol" type="java.lang.String" />
+        
+	  <![CDATA[SELECT usu.email,
+	                  usu.nombre,
+	                  usu.codigo_usua AS codigoUsua,
+	                  usu.Roles_codigo_Rol AS codigoRol_Roles,
+	                  rl.nombre_rol AS rol
+	                  FROM
+                 USUARIOS usu
+                INNER JOIN ROLES rl ON rl.codigo_rol=usu.roles_codigo_rol
+               WHERE usu.email=:pCorreo]]>
+    </sql-query>
+    
+    
 </hibernate-mapping>
