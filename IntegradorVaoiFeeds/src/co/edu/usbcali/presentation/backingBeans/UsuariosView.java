@@ -69,10 +69,11 @@ public class UsuariosView implements Serializable {
 		try {
 			String email = FacesContext.getCurrentInstance().getExternalContext()
 					.getUserPrincipal().getName();
-			
-			
+						
 			if(email!=null&&email.length()>1){
 				usuario=businessDelegatorView.consultaUsuarioXEmail(email);	
+				FacesUtils.setManagedBeanInSession("usuario", usuario);
+				
 			}else{
 				usuario=new UsuariosDTO();
 				usuario.setRol("No existe ninguna sesion activa");
